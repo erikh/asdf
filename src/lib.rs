@@ -1,15 +1,23 @@
-type Port = u64;
-type Position = u64;
+pub type Port = u64;
+pub type Position = u64;
 
-type Network<const SIZE: usize> = [usize; SIZE];
+pub type Network<const SIZE: usize> = [usize; SIZE];
 
-struct Address<const SIZE: usize> {
+pub struct Address<const SIZE: usize> {
     network: Network<SIZE>,
     position: Position,
     port: Port,
 }
 
-struct Node<const SIZE: usize> {
+pub struct Node<const SIZE: usize> {
     address: Address<SIZE>,
     name: String,
+}
+
+pub type PropagateResult = anyhow::Result<(bool, bool)>;
+
+pub impl Network {
+    pub fn propagate() -> PropagateResult {
+        Ok((true, true))
+    }
 }
