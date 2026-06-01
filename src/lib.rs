@@ -21,6 +21,16 @@ pub struct NetworkIter<const SIZE: usize, const ADDR_SIZE: usize> {
     idx: usize,
 }
 
+pub struct NetworkBroadcast<const SIZE: usize, const ADDR_SIZE: usize> {
+    network: Network<SIZE, ADDR_SIZE>,
+}
+
+pub struct NetworkBroadcastIter<const SIZE: usize, const ADDR_SIZE: usize, const BATCH_SIZE: usize>
+{
+    network: Network<SIZE, ADDR_SIZE>,
+    idx: usize,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct Address {
     position: Position,
@@ -81,6 +91,25 @@ impl<const SIZE: usize, const ADDR_SIZE: usize> Iterator for NetworkIter<SIZE, A
             None
         } else {
             Some(self.network.0[self.idx].clone())
+        }
+    }
+}
+
+impl<const SIZE: usize, const ADDR_SIZE: usize, const BATCH_SIZE: usize> Iterator
+    for NetworkBroadcastIter<SIZE, ADDR_SIZE, BATCH_SIZE>
+{
+    type Item = Network<BATCH_SIZE, ADDR_SIZE>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.idx > SIZE {
+            None
+        } else {
+            let (idx, out) = self
+                .network
+                .slice_peers::<BATCH_SIZE>()
+                .expect("invalid index");
+            self.idx = idx;
+            Some(out)
         }
     }
 }
