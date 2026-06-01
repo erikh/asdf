@@ -42,8 +42,6 @@ impl Node {
     }
 }
 
-pub type PropagateResult = anyhow::Result<(bool, bool)>;
-
 impl<const ORIG: usize, const NEW: usize, const ADDR_SIZE: usize> From<[Node; ORIG]>
     for Network<NEW, ADDR_SIZE>
 {
@@ -63,7 +61,7 @@ impl<const SIZE: usize, const ADDR_SIZE: usize> Network<SIZE, ADDR_SIZE> {
     }
 
     // returns a cursor
-    pub fn find_peers<const BATCH_SIZE: usize>(
+    pub fn slice_peers<const BATCH_SIZE: usize>(
         &self,
     ) -> anyhow::Result<(usize, Network<BATCH_SIZE, ADDR_SIZE>)> {
         Ok((BATCH_SIZE, self.0.clone().into()))
