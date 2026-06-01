@@ -16,6 +16,11 @@ impl<const SIZE: usize, const ADDR_SIZE: usize> Default for Network<SIZE, ADDR_S
     }
 }
 
+pub struct NetworkIter<const SIZE: usize, const ADDR_SIZE: usize> {
+    network: Network<SIZE, ADDR_SIZE>,
+    idx: usize,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct Address {
     position: Position,
@@ -65,5 +70,17 @@ impl<const SIZE: usize, const ADDR_SIZE: usize> Network<SIZE, ADDR_SIZE> {
         &self,
     ) -> anyhow::Result<(usize, Network<BATCH_SIZE, ADDR_SIZE>)> {
         Ok((BATCH_SIZE, self.0.clone().into()))
+    }
+}
+
+impl<const SIZE: usize, const ADDR_SIZE: usize> Iterator for NetworkIter<SIZE, ADDR_SIZE> {
+    type Item = Node;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.idx > SIZE {
+            None
+        } else {
+            Some(self.network.0[self.idx].clone())
+        }
     }
 }
